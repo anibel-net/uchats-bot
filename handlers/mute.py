@@ -7,6 +7,8 @@ from loguru import logger
 from pyrogram import Client, filters
 from pyrogram.types import Message, ChatPermissions
 
+from functions import is_admin
+
 PATTERN = re.compile(r'^/(mute|ro) ?(?P<term>(?P<count>\d+(\.\d+)?) ?(?P<unit>[a-z]+))? ?(?P<reason>.+)?$', re.I)
 
 
@@ -31,6 +33,12 @@ async def on_message(client: Client, message: Message):
         logger.debug(f'[{message.chat.id} ({message.message_id})] Received message'
                      f'from @{message.from_user.username} ({message.from_user.id}): {message.text}')
         # </editor-fold>
+        if not await is_admin(client, message.chat.id, message.from_user.id):
+            # <editor-fold defaultstate="collapsed" desc="logging">
+            logger.debug(f'[{message.chat.id} ({message.message_id})] user @{message.from_user.username} '
+                         f'({message.from_user.id}) isn\'t administrator, ignoring.')
+            # </editor-fold>
+            return
     if message.sender_chat:
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.debug(f'[{message.chat.id} ({message.message_id})] Received message'
@@ -77,8 +85,7 @@ async def on_message(client: Client, message: Message):
             logger.debug(f'[{message.chat.id} ({message.message_id})] Done.')
             # </editor-fold>
             return
-    chat_member = await client.get_chat_member(message.chat.id, target.id)
-    if chat_member.status in ('creator', 'administrator'):
+    if await is_admin(client, message.chat.id, message.from_user.id):
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.debug(f'[{message.chat.id} ({message.message_id})] Can\'t mute because replied user is administrator; '
                      f'informing...')
