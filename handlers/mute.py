@@ -85,7 +85,7 @@ async def on_message(client: Client, message: Message):
             logger.debug(f'[{message.chat.id} ({message.message_id})] Done.')
             # </editor-fold>
             return
-    if await is_admin(client, message.chat.id, message.from_user.id):
+    if await is_admin(client, message.chat.id, message.reply_to_message.from_user.id):
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.debug(f'[{message.chat.id} ({message.message_id})] Can\'t mute because replied user is administrator; '
                      f'informing...')
