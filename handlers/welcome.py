@@ -53,11 +53,7 @@ async def new_chat_member_handler(client: Client, message: Message):
     # <editor-fold defaultstate="collapsed" desc="logging">
     logger.debug(f'[{message.chat.id} ({message.message_id})] Deleting all welcome messages.')
     # </editor-fold>
-    for reply in replied:
-        try:
-            await reply.delete()
-        except:
-            ...
+    [await reply.delete() for reply in replied]
     # <editor-fold defaultstate="collapsed" desc="logging">
     logger.debug(f'[{message.chat.id} ({message.message_id})] Done.')
     # </editor-fold>
