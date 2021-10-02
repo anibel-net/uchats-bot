@@ -2,3 +2,4 @@ python-dotenv
 loguru
 pyrogram
 tgcrypto
+motor
