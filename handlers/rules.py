@@ -6,8 +6,8 @@ from db.ChatData import ChatData
 from functions import is_admin
 
 
-@Client.on_message(filters.command('rules'))
-async def new_chat_member_handler(_: Client, message: Message):
+@Client.on_message(filters.command('rules'), group=25)
+async def rules_handler(_: Client, message: Message):
     if message.from_user:
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.debug(f'[{message.chat.id} ({message.message_id})] Received message'
@@ -33,8 +33,8 @@ async def new_chat_member_handler(_: Client, message: Message):
     return
 
 
-@Client.on_message(filters.command('set rules'))
-async def set_command_handler(client: Client, message: Message):
+@Client.on_message(filters.command('set rules'), group=20)
+async def set_rules_handler(client: Client, message: Message):
     if message.from_user:
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.debug(f'[{message.chat.id} ({message.message_id})] Received message'

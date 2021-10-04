@@ -4,7 +4,7 @@ from pyrogram.errors import BadRequest
 from pyrogram.types import Message
 
 
-@Client.on_message(filters.command('report', ['/', '!']) | filters.command(['admin', 'admins'], '@'))
+@Client.on_message(filters.command('report', ['/', '!']) | filters.command(['admin', 'admins'], '@'), group=25)
 async def report_handler(client: Client, message: Message):
     if message.from_user:
         # <editor-fold defaultstate="collapsed" desc="logging">

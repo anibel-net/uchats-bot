@@ -8,7 +8,7 @@ from db.ChatData import ChatData
 from functions import is_admin
 
 
-@Client.on_message(filters.new_chat_members | filters.command('test welcome'))
+@Client.on_message(filters.new_chat_members | filters.command('test welcome'), group=15)
 async def new_chat_member_handler(client: Client, message: Message):
     if not message.service:
         if message.from_user:
@@ -60,8 +60,8 @@ async def new_chat_member_handler(client: Client, message: Message):
     return
 
 
-@Client.on_message(filters.command('set welcome'))
-async def set_command_handler(client: Client, message: Message):
+@Client.on_message(filters.command('set welcome'), group=20)
+async def set_welcome_handler(client: Client, message: Message):
     if message.from_user:
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.debug(f'[{message.chat.id} ({message.message_id})] Received message'

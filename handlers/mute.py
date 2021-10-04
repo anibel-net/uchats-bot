@@ -27,7 +27,7 @@ PERIOD_IN_SECONDS: PeriodInSeconds = {
 
 @logger.catch
 @Client.on_message(filters.command(['mute', 'ro']) & filters.group, group=20)
-async def on_message(client: Client, message: Message):
+async def on_mute(client: Client, message: Message):
     if message.from_user:
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.debug(f'[{message.chat.id} ({message.message_id})] Received message'
