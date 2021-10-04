@@ -4,7 +4,6 @@ from typing import List
 
 from loguru import logger
 from pyrogram import Client, filters
-from pyrogram.errors import BadRequest
 from pyrogram.types import Message, ChatPermissions, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 
 from functions import is_admin
