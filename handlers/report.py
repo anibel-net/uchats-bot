@@ -35,6 +35,7 @@ async def report_handler(client: Client, message: Message):
                          f'Trying to report to {admin.user.id} ({admin.user.username})...')
             # </editor-fold>
             await client.send_message(admin.user.id,
+                                      f'Новая скарга з чата: '
                                       f'https://t.me/c/{message.chat.id * -1 - 1000000000000}/{message.message_id}')
             # <editor-fold defaultstate="collapsed" desc="logging">
             logger.debug(f'[{message.chat.id} ({message.message_id})] '
