@@ -8,7 +8,7 @@ from db.ChatData import ChatData
 from functions import is_admin
 
 
-@Client.on_message(filters.new_chat_members | filters.command('test welcome'), group=15)
+@Client.on_message(filters.new_chat_members | filters.command('test welcome'), group=16)
 async def new_chat_member_handler(client: Client, message: Message):
     if not message.service:
         if message.from_user:
