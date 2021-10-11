@@ -3,3 +3,5 @@ loguru
 pyrogram
 tgcrypto
 motor
+apscheduler
+requests
