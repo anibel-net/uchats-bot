@@ -5,7 +5,7 @@ from pyrogram.types import Message
 
 
 @Client.on_message(filters.command('report', ['/', '!']) | filters.command(['admin', 'admins'], '@'), group=303)
-async def report_handler(client: Client, message: Message):
+async def on_report(client: Client, message: Message):
     if message.from_user:
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'[{message.chat.id} ({message.message_id})] Received message'

@@ -7,7 +7,7 @@ from functions import is_admin
 
 
 @Client.on_message(filters.command('rules'), group=302)
-async def rules_handler(_: Client, message: Message):
+async def on_rules(_: Client, message: Message):
     if message.from_user:
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'[{message.chat.id} ({message.message_id})] Received message'
@@ -34,7 +34,7 @@ async def rules_handler(_: Client, message: Message):
 
 
 @Client.on_message(filters.command('set rules'), group=202)
-async def set_rules_handler(client: Client, message: Message):
+async def on_set_rules(client: Client, message: Message):
     if message.from_user:
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'[{message.chat.id} ({message.message_id})] Received message'

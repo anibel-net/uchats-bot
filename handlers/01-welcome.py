@@ -9,7 +9,7 @@ from functions import is_admin
 
 
 @Client.on_message(filters.new_chat_members | filters.command('test welcome'), group=101)
-async def new_chat_member_handler(client: Client, message: Message):
+async def on_new_chat_member(client: Client, message: Message):
     if not message.service:
         if message.from_user:
             # <editor-fold defaultstate="collapsed" desc="logging">
@@ -61,7 +61,7 @@ async def new_chat_member_handler(client: Client, message: Message):
 
 
 @Client.on_message(filters.command('set welcome'), group=201)
-async def set_welcome_handler(client: Client, message: Message):
+async def on_set_welcome(client: Client, message: Message):
     if message.from_user:
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'[{message.chat.id} ({message.message_id})] Received message'
