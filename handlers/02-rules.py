@@ -6,67 +6,66 @@ from db.ChatData import ChatData
 from functions import is_admin
 
 
-@Client.on_message(filters.command('rules'), group=25)
+@Client.on_message(filters.command('rules'), group=302)
 async def rules_handler(_: Client, message: Message):
     if message.from_user:
         # <editor-fold defaultstate="collapsed" desc="logging">
-        logger.debug(f'[{message.chat.id} ({message.message_id})] Received message'
+        logger.info(f'[{message.chat.id} ({message.message_id})] Received message'
                      f'from @{message.from_user.username} ({message.from_user.id}): {message.text}')
         # </editor-fold>
     if message.sender_chat:
         # <editor-fold defaultstate="collapsed" desc="logging">
-        logger.debug(f'[{message.chat.id} ({message.message_id})] Received message'
+        logger.info(f'[{message.chat.id} ({message.message_id})] Received message'
                      f'from @{message.sender_chat.username} ({message.sender_chat.id}): {message.text}')
         # </editor-fold>
     # <editor-fold defaultstate="collapsed" desc="logging">
-    logger.debug(f'[{message.chat.id} ({message.message_id})] Initialization chat_data...')
+    logger.info(f'[{message.chat.id} ({message.message_id})] Initialization chat_data...')
     # </editor-fold>
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
     # <editor-fold defaultstate="collapsed" desc="logging">
-    logger.debug(f'[{message.chat.id} ({message.message_id})] initialized.')
+    logger.info(f'[{message.chat.id} ({message.message_id})] initialized.')
     # </editor-fold>
     await message.reply(chat_data.rules)
     # <editor-fold defaultstate="collapsed" desc="logging">
-    logger.debug(f'[{message.chat.id} ({message.message_id})] Sent rules. Done.')
+    logger.info(f'[{message.chat.id} ({message.message_id})] Sent rules. Done.')
     # </editor-fold>
     return
 
 
-@Client.on_message(filters.command('set rules'), group=20)
+@Client.on_message(filters.command('set rules'), group=202)
 async def set_rules_handler(client: Client, message: Message):
     if message.from_user:
         # <editor-fold defaultstate="collapsed" desc="logging">
-        logger.debug(f'[{message.chat.id} ({message.message_id})] Received message'
+        logger.info(f'[{message.chat.id} ({message.message_id})] Received message'
                      f'from @{message.from_user.username} ({message.from_user.id}): {message.text}')
         # </editor-fold>
         if not await is_admin(client, message.chat.id, message.from_user.id):
             # <editor-fold defaultstate="collapsed" desc="logging">
-            logger.debug(f'[{message.chat.id} ({message.message_id})] user @{message.from_user.username} '
+            logger.info(f'[{message.chat.id} ({message.message_id})] user @{message.from_user.username} '
                          f'({message.from_user.id}) isn\'t administrator, ignoring.')
             # </editor-fold>
             return
     if message.sender_chat:
         # <editor-fold defaultstate="collapsed" desc="logging">
-        logger.debug(f'[{message.chat.id} ({message.message_id})] Received message'
+        logger.info(f'[{message.chat.id} ({message.message_id})] Received message'
                      f'from @{message.sender_chat.username} ({message.sender_chat.id}): {message.text}')
         # </editor-fold>
 
     # <editor-fold defaultstate="collapsed" desc="logging">
-    logger.debug(f'[{message.chat.id} ({message.message_id})] Initialization chat_data...')
+    logger.info(f'[{message.chat.id} ({message.message_id})] Initialization chat_data...')
     # </editor-fold>
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
     # <editor-fold defaultstate="collapsed" desc="logging">
-    logger.debug(f'[{message.chat.id} ({message.message_id})] initialized.')
-    logger.debug(f'[{message.chat.id} ({message.message_id})] Changing rules.')
+    logger.info(f'[{message.chat.id} ({message.message_id})] initialized.')
+    logger.info(f'[{message.chat.id} ({message.message_id})] Changing rules.')
     # </editor-fold>
-    logger.info(message.command[0])
     await chat_data.update('rules', ' '.join(message.command[1:]))
     # <editor-fold defaultstate="collapsed" desc="logging">
-    logger.debug(f'[{message.chat.id} ({message.message_id})] Changed rules; reporting.')
+    logger.info(f'[{message.chat.id} ({message.message_id})] Changed rules; reporting.')
     # </editor-fold>
     await message.reply('Правілы паспяхова зменены!')
     # <editor-fold defaultstate="collapsed" desc="logging">
-    logger.debug(f'[{message.chat.id} ({message.message_id})] Done.')
+    logger.info(f'[{message.chat.id} ({message.message_id})] Done.')
     # </editor-fold>
