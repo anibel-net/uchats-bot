@@ -16,6 +16,7 @@ class _Chat(TypedDict):
     welcome_message_timeout: int
     rules: str
     banned_channels: list[int]
+    banned_stickers: list[str]
 
 
 class ChatData:
@@ -25,6 +26,7 @@ class ChatData:
     welcome_message_timeout: int
     rules: str
     banned_channels: list[int]
+    banned_stickers: list[str]
 
     def __init__(self):
         ...
@@ -43,7 +45,8 @@ class ChatData:
                 'welcome_message': 'Вітаю!',
                 'rules': 'Няхай жыве анархія!',
                 'welcome_message_timeout': 60,
-                'banned_channels': []
+                'banned_channels': [],
+                'banned_stickers': []
             })
             # <editor-fold defaultstate="collapsed" desc="logging">
             logger.info(f'Inserted default placeholder for {chat_id}.')
@@ -51,12 +54,13 @@ class ChatData:
             result: _Chat = await collection.find_one({'_id': insert_result.inserted_id})
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'Chat config for {chat_id}:\n'
-                     f' - _id is {result["_id"]}\n'
-                     f' - chat_id is {result["chat_id"]}\n'
-                     f' - welcome_message is {result["welcome_message"]}\n'
-                     f' - welcome_message_timeout is {result["welcome_message_timeout"]}\n'
-                     f' - rules is {result["rules"]}\n'
-                     f' - banned_channels is {result["banned_channels"]}')
+                    f' - _id is {result["_id"]}\n'
+                    f' - chat_id is {result["chat_id"]}\n'
+                    f' - welcome_message is {result["welcome_message"]}\n'
+                    f' - welcome_message_timeout is {result["welcome_message_timeout"]}\n'
+                    f' - rules is {result["rules"]}\n'
+                    f' - banned_channels is {result["banned_channels"]}\n'
+                    f' - banned_stickers is {result["banned_stickers"]}')
         # </editor-fold>
         self.__id = result['_id']
         self.__chat_id = result['chat_id']
@@ -64,6 +68,7 @@ class ChatData:
         self.welcome_message_timeout = result['welcome_message_timeout']
         self.rules = result['rules']
         self.banned_channels = result['banned_channels']
+        self.banned_stickers = result['banned_stickers']
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'Set all values for {chat_id}. Done.')
         # </editor-fold>
@@ -76,12 +81,13 @@ class ChatData:
         result: _Chat = await collection.find_one({'_id': self.__id})
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'Updated; new values for {self.__chat_id} (id is {self.__id}):\n'
-                     f' - chat_id is {result["chat_id"]}\n'
-                     f' - welcome_message is {result["welcome_message"]}\n'
-                     f' - welcome_message_timeout is {result["welcome_message_timeout"]}\n'
-                     f' - rules is {result["rules"]}\n'
-                     f' - banned_channels is {result["banned_channels"]}\n'
-                     f'Setting it as object attributes.')
+                    f' - chat_id is {result["chat_id"]}\n'
+                    f' - welcome_message is {result["welcome_message"]}\n'
+                    f' - welcome_message_timeout is {result["welcome_message_timeout"]}\n'
+                    f' - rules is {result["rules"]}\n'
+                    f' - banned_channels is {result["banned_channels"]}\n'
+                    f' - banned_stickers is {result["banned_stickers"]}\n'
+                    f'Setting it as object attributes.')
         # </editor-fold>
         self.__id = result['_id']
         self.__chat_id = result['chat_id']
@@ -89,6 +95,7 @@ class ChatData:
         self.welcome_message_timeout = result['welcome_message_timeout']
         self.rules = result['rules']
         self.banned_channels = result['banned_channels']
+        self.banned_stickers = result['banned_stickers']
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'Updated all values for {result["chat_id"]}. Done.')
         # </editor-fold>
