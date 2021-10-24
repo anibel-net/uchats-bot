@@ -3,8 +3,8 @@ from typing import TypedDict, Union
 
 from loguru import logger
 from pyrogram import Client, filters
+from pyrogram.errors import PeerIdInvalid, UsernameNotOccupied, FloodWait, UsernameInvalid
 from pyrogram.types import Message
-from pyrogram.errors import PeerIdInvalid
 
 from db.ChatData import ChatData
 from functions import is_admin
@@ -14,6 +14,41 @@ class BanCandidate(TypedDict):
     id: int
     username: Union[str, None]
     title: str
+
+
+async def validate_channel(client: Client, cid: str) -> Union[BanCandidate, None]:
+    try:
+        # <editor-fold defaultstate="collapsed" desc="logging">
+        logger.info(f'[{cid}] Validating channel.')
+        # </editor-fold>
+        channel = await client.get_chat(cid)
+        if channel.type != 'channel':
+            # <editor-fold defaultstate="collapsed" desc="logging">
+            logger.info(f'[{cid}] Chat is not channel.')
+            # </editor-fold>
+            return
+        # <editor-fold defaultstate="collapsed" desc="logging">
+        logger.info(f'[{cid}] Validated.')
+        # </editor-fold>
+        return {
+            'id': channel.id,
+            'username': channel.username,
+            'title': str(channel.title)
+        }
+    except (PeerIdInvalid, UsernameNotOccupied, UsernameInvalid) as e:
+        # <editor-fold defaultstate="collapsed" desc="logging">
+        logger.error(f"[{cid}] Couldn't convert find channel.")
+        # </editor-fold>
+        return
+    except FloodWait as e:
+        # <editor-fold defaultstate="collapsed" desc="logging">
+        logger.error(f'[{cid}] Got FloodWait, waiting {e.x} seconds.')
+        # </editor-fold>
+        await asyncio.sleep(e.x)
+        # <editor-fold defaultstate="collapsed" desc="logging">
+        logger.info(f'[{cid}] Waited {e.x} seconds. Trying again.')
+        # </editor-fold>
+        return await validate_channel(client, cid)
 
 
 @Client.on_message(filters.forwarded, group=107)
@@ -129,29 +164,9 @@ async def on_ban_channel(client: Client, message: Message):
 
     if len(message.command) > 1:
         for arg in message.command[1:]:
-            try:
-                # <editor-fold defaultstate="collapsed" desc="logging">
-                logger.info(f'[{message.chat.id} ({message.message_id})] Validating "{arg}" as channel.')
-                # </editor-fold>
-                channel = await client.get_chat(arg)
-                if channel.type != 'channel':
-                    # <editor-fold defaultstate="collapsed" desc="logging">
-                    logger.info(f'[{message.chat.id} ({message.message_id})] "{arg}" is not channel. Skipping...')
-                    # </editor-fold>
-                    continue
-                ban_candidates.append({
-                    'id': channel.id,
-                    'username': channel.username,
-                    'title': str(channel.title)
-                })
-            except PeerIdInvalid as e:
-                # <editor-fold defaultstate="collapsed" desc="logging">
-                logger.error(f'[{message.chat.id} ({message.message_id})] Couldn\t convert find channel "{arg}"'
-                             f'. Skipping...')
-                # </editor-fold>
-                continue
-
-    logger.debug(ban_candidates)
+            channel = await validate_channel(client, arg)
+            if channel:
+                ban_candidates.append(channel)
 
     # <editor-fold defaultstate="collapsed" desc="logging">
     logger.info(f'[{message.chat.id} ({message.message_id})] Ban candidates: '
