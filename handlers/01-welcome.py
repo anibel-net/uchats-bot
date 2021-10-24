@@ -88,7 +88,7 @@ async def on_set_welcome(client: Client, message: Message):
     logger.info(f'[{message.chat.id} ({message.message_id})] initialized.')
     logger.info(f'[{message.chat.id} ({message.message_id})] Changing welcome_message.')
     # </editor-fold>
-    await chat_data.update('welcome_message', ' '.join(message.command[1:]))
+    await chat_data.update('welcome_message', ' '.join(message.text.markdown[13:]))
     # <editor-fold defaultstate="collapsed" desc="logging">
     logger.info(f'[{message.chat.id} ({message.message_id})] Changed welcome_message; reporting.')
     # </editor-fold>
