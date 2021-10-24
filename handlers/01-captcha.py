@@ -1,3 +1,4 @@
+import asyncio
 import random
 import re
 from typing import List
@@ -6,6 +7,7 @@ from loguru import logger
 from pyrogram import Client, filters
 from pyrogram.types import Message, ChatPermissions, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 
+from db.ChatData import ChatData
 from functions import is_admin
 
 CORRECT_ANSWERS: List[str] = [
@@ -25,7 +27,7 @@ WRONG_ANSWERS: List[str] = [
 async def on_new_chat_member(client: Client, message: Message):
     # <editor-fold defaultstate="collapsed" desc="logging">
     logger.info(f'[{message.chat.id} ({message.message_id})] New user joined chat: '
-                 + ', '.join(map(lambda user: f'@{user.username} ({user.id})', message.new_chat_members)))
+                + ', '.join(map(lambda user: f'@{user.username} ({user.id})', message.new_chat_members)))
     # </editor-fold>
     for user in message.new_chat_members:
         if user.is_bot:
@@ -51,7 +53,7 @@ async def on_new_chat_member(client: Client, message: Message):
         random.shuffle(buttons)
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'[{message.chat.id} ({message.message_id})] Generated buttons for {user.id}: '
-                     + ', '.join(map(lambda button: f'{button[0].text} ({button[0].callback_data[:2]})', buttons)))
+                    + ', '.join(map(lambda button: f'{button[0].text} ({button[0].callback_data[:2]})', buttons)))
         # </editor-fold>
         await message.reply('Вітаю, перад тым, як пачаць пісаць, распавядзіце крыху пра сябе.',
                             reply_markup=InlineKeyboardMarkup(buttons))
@@ -83,7 +85,35 @@ async def on_callback_query(client: Client, query: CallbackQuery):
             int(correct_math.group('uid')),
             (await client.get_chat(int(correct_math.group('cid')))).permissions
         )
+        # <editor-fold defaultstate="collapsed" desc="logging">
+        logger.info(f'[{query.id}] Initialization chat_data...')
+        # </editor-fold>
+        chat_data = ChatData()
+        await chat_data.init(query.message.chat.id)
+        # <editor-fold defaultstate="collapsed" desc="logging">
+        logger.info(f'[{query.id}] initialized.')
+        logger.info(f'[{query.id}] Sending welcome.')
+        # </editor-fold>
+        welcome = await client.send_message(int(correct_math.group('cid')), chat_data.welcome_message.format(
+            **(await client.get_users(int(correct_math.group('uid')))).__dict__))
+        # <editor-fold defaultstate="collapsed" desc="logging">
+        logger.info(f'[{query.id}] Welcome sent.')
+        logger.info(f'[{query.id}] Deleting captcha message.')
+        # </editor-fold>
         await query.message.delete()
+        # <editor-fold defaultstate="collapsed" desc="logging">
+        logger.info(f'[{query.id}] Deleted captcha message.')
+        logger.info(f'[{query.id}] Sleeping.')
+        # </editor-fold>
+        await asyncio.sleep(chat_data.welcome_message_timeout)
+        # <editor-fold defaultstate="collapsed" desc="logging">
+        logger.info(f'[{query.id}] Awoke.')
+        logger.info(f'[{query.id}] Deleting welcome message.')
+        # </editor-fold>
+        await welcome.delete()
+        # <editor-fold defaultstate="collapsed" desc="logging">
+        logger.info(f'[{query.id}] Deleted welcome message.')
+        # </editor-fold>
 
     if wrong_math:
         # <editor-fold defaultstate="collapsed" desc="logging">
@@ -102,3 +132,41 @@ async def on_callback_query(client: Client, query: CallbackQuery):
     logger.info(f'[{query.id}] Done.')
     # </editor-fold>
     return
+
+
+@Client.on_message(filters.command('set welcome'), group=201)
+async def on_set_welcome(client: Client, message: Message):
+    if message.from_user:
+        # <editor-fold defaultstate="collapsed" desc="logging">
+        logger.info(f'[{message.chat.id} ({message.message_id})] Received message'
+                     f'from @{message.from_user.username} ({message.from_user.id}): {message.text}')
+        # </editor-fold>
+        if not await is_admin(client, message.chat.id, message.from_user.id):
+            # <editor-fold defaultstate="collapsed" desc="logging">
+            logger.info(f'[{message.chat.id} ({message.message_id})] user @{message.from_user.username} '
+                         f'({message.from_user.id}) isn\'t administrator, ignoring.')
+            # </editor-fold>
+            return
+    if message.sender_chat:
+        # <editor-fold defaultstate="collapsed" desc="logging">
+        logger.info(f'[{message.chat.id} ({message.message_id})] Received message'
+                     f'from @{message.sender_chat.username} ({message.sender_chat.id}): {message.text}')
+        # </editor-fold>
+
+    # <editor-fold defaultstate="collapsed" desc="logging">
+    logger.info(f'[{message.chat.id} ({message.message_id})] Initialization chat_data...')
+    # </editor-fold>
+    chat_data = ChatData()
+    await chat_data.init(message.chat.id)
+    # <editor-fold defaultstate="collapsed" desc="logging">
+    logger.info(f'[{message.chat.id} ({message.message_id})] initialized.')
+    logger.info(f'[{message.chat.id} ({message.message_id})] Changing welcome_message.')
+    # </editor-fold>
+    await chat_data.update('welcome_message', ' '.join(message.text.markdown[13:]))
+    # <editor-fold defaultstate="collapsed" desc="logging">
+    logger.info(f'[{message.chat.id} ({message.message_id})] Changed welcome_message; reporting.')
+    # </editor-fold>
+    await message.reply('Вітанка паспяхова зменена!')
+    # <editor-fold defaultstate="collapsed" desc="logging">
+    logger.info(f'[{message.chat.id} ({message.message_id})] Done.')
+    # </editor-fold>
