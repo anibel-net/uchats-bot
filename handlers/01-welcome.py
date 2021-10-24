@@ -1,4 +1,5 @@
 import asyncio
+import os
 import random
 import re
 from typing import List
@@ -10,17 +11,8 @@ from pyrogram.types import Message, ChatPermissions, InlineKeyboardMarkup, Inlin
 from db.ChatData import ChatData
 from functions import is_admin
 
-CORRECT_ANSWERS: List[str] = [
-    'Я чалавек',
-    'Я не бот'
-]
-WRONG_ANSWERS: List[str] = [
-    'Я бот',
-    'Я спамер',
-    'Я не буду размаўляць па-беларуску',
-    'Я буду абражаць іншых',
-    'Я чарговы фейк Сямёна'
-]
+CORRECT_ANSWERS: List[str] = os.environ.get('CAPTCHA_CORRECT_ANSWERS').split(';')
+WRONG_ANSWERS: List[str] = os.environ.get('CAPTCHA_WRONG_ANSWERS').split(';')
 
 
 @Client.on_message(filters.new_chat_members, group=101)
