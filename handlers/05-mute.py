@@ -33,10 +33,10 @@ async def on_mute(client: Client, message: Message):
         logger.info(f'[{message.chat.id} ({message.message_id})] Received message'
                      f'from @{message.from_user.username} ({message.from_user.id}): {message.text}')
         # </editor-fold>
-        if not await is_admin(client, message.chat.id, message.from_user.id):
+        if not (await client.get_chat_member(message.chat.id, message.from_user.id)).can_restrict_members:
             # <editor-fold defaultstate="collapsed" desc="logging">
             logger.info(f'[{message.chat.id} ({message.message_id})] user @{message.from_user.username} '
-                         f'({message.from_user.id}) isn\'t administrator, ignoring.')
+                        f'({message.from_user.id}) haven\'t got can_restrict_members permission. Informing...')
             # </editor-fold>
             return
     if message.sender_chat:
@@ -67,25 +67,7 @@ async def on_mute(client: Client, message: Message):
     logger.info(f'[{message.chat.id} ({message.message_id})] Replied user (mute target) is '
                  f'@{target.username} ({target.id}).')
     # </editor-fold>
-    if message.from_user:
-        if not (await client.get_chat_member(message.chat.id, message.from_user.id)).can_restrict_members:
-            # <editor-fold defaultstate="collapsed" desc="logging">
-            logger.info(f'[{message.chat.id} ({message.message_id})] user @{message.from_user.username} '
-                         f'({message.from_user.id}) haven\'t got can_restrict_members permission. Informing...')
-            # </editor-fold>
-            reply = await message.reply('У вас бракуе праваў, каб зрабіць гэта.')
-            await asyncio.sleep(10)
-            # <editor-fold defaultstate="collapsed" desc="logging">
-            logger.info(f'[{message.chat.id} ({message.message_id})] User informed 10 seconds ago. '
-                         f'Deleting message and reply...')
-            # </editor-fold>
-            await message.delete()
-            await reply.delete()
-            # <editor-fold defaultstate="collapsed" desc="logging">
-            logger.info(f'[{message.chat.id} ({message.message_id})] Done.')
-            # </editor-fold>
-            return
-    if await is_admin(client, message.chat.id, message.reply_to_message.from_user.id):
+    if await is_admin(client, message.chat.id, target.id):
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'[{message.chat.id} ({message.message_id})] Can\'t mute because replied user is administrator; '
                      f'informing...')
