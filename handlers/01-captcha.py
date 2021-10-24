@@ -21,7 +21,7 @@ WRONG_ANSWERS: List[str] = [
 ]
 
 
-@Client.on_message(filters.new_chat_members, group=106)
+@Client.on_message(filters.new_chat_members, group=101)
 async def on_new_chat_member(client: Client, message: Message):
     # <editor-fold defaultstate="collapsed" desc="logging">
     logger.info(f'[{message.chat.id} ({message.message_id})] New user joined chat: '
@@ -60,7 +60,7 @@ async def on_new_chat_member(client: Client, message: Message):
         # </editor-fold>
 
 
-@Client.on_callback_query(group=6)
+@Client.on_callback_query(group=1)
 async def on_callback_query(client: Client, query: CallbackQuery):
     # <editor-fold defaultstate="collapsed" desc="logging">
     logger.info(f'[{query.id}] Got callback_query: {query.data}.')
