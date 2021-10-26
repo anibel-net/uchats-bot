@@ -1,20 +1,26 @@
+import os
+
 from loguru import logger
 from pyrogram import Client, filters
 from pyrogram.errors import BadRequest
 from pyrogram.types import Message
 
 
-@Client.on_message(filters.command('report', ['/', '!']) | filters.command(['admin', 'admins'], '@'), group=303)
+@Client.on_message(
+    filters.command(['report', f'report@{os.environ.get("BOT_USERNAME")}'], ['/', '!']) |
+    filters.command(['admin', 'admins'], '@'),
+    group=303
+)
 async def on_report(client: Client, message: Message):
     if message.from_user:
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'[{message.chat.id} ({message.message_id})] Received message'
-                     f'from @{message.from_user.username} ({message.from_user.id}): {message.text}')
+                    f'from @{message.from_user.username} ({message.from_user.id}): {message.text}')
         # </editor-fold>
     if message.sender_chat:
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'[{message.chat.id} ({message.message_id})] Received message'
-                     f'from @{message.sender_chat.username} ({message.sender_chat.id}): {message.text}')
+                    f'from @{message.sender_chat.username} ({message.sender_chat.id}): {message.text}')
         # </editor-fold>
     admins = client.iter_chat_members(message.chat.id, filter='administrators')
     if admins is None:
@@ -32,14 +38,14 @@ async def on_report(client: Client, message: Message):
         try:
             # <editor-fold defaultstate="collapsed" desc="logging">
             logger.info(f'[{message.chat.id} ({message.message_id})] '
-                         f'Trying to report to {admin.user.id} ({admin.user.username})...')
+                        f'Trying to report to {admin.user.id} ({admin.user.username})...')
             # </editor-fold>
             await client.send_message(admin.user.id,
                                       f'Новая скарга з чата: '
                                       f'https://t.me/c/{message.chat.id * -1 - 1000000000000}/{message.message_id}')
             # <editor-fold defaultstate="collapsed" desc="logging">
             logger.info(f'[{message.chat.id} ({message.message_id})] '
-                         f'Reported to {admin.user.id} ({admin.user.username}).')
+                        f'Reported to {admin.user.id} ({admin.user.username}).')
             # </editor-fold>
         except BadRequest as e:
             # <editor-fold defaultstate="collapsed" desc="logging">

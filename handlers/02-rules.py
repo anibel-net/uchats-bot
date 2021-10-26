@@ -1,3 +1,5 @@
+import os
+
 from loguru import logger
 from pyrogram import Client, filters
 from pyrogram.types import Message
@@ -6,7 +8,7 @@ from db.ChatData import ChatData
 from functions import is_admin
 
 
-@Client.on_message(filters.command('rules'), group=302)
+@Client.on_message(filters.command('rules', f'rules@{os.environ.get("BOT_USERNAME")}'), group=302)
 async def on_rules(_: Client, message: Message):
     if message.from_user:
         # <editor-fold defaultstate="collapsed" desc="logging">
