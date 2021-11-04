@@ -32,7 +32,7 @@ async def on_new_chat_member(client: Client, message: Message):
         logger.info(f'[{message.chat.id} ({message.message_id})] Restricted user {user.id}.')
         # </editor-fold>
         wrong_answers: List[str] = []
-        wrong_answers_count = random.randint(2, len(WRONG_ANSWERS) - 1)
+        wrong_answers_count = random.randint(1, 3)
         while len(wrong_answers) < wrong_answers_count:
             wrong_answer = random.choice(WRONG_ANSWERS)
             if wrong_answer not in wrong_answers:
