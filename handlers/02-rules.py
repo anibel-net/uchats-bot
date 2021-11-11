@@ -63,7 +63,7 @@ async def on_set_rules(client: Client, message: Message):
     logger.info(f'[{message.chat.id} ({message.message_id})] initialized.')
     logger.info(f'[{message.chat.id} ({message.message_id})] Changing rules.')
     # </editor-fold>
-    await chat_data.update('rules', ' '.join(message.text.markdown[11:]))
+    await chat_data.update('rules', message.text.markdown[11:])
     # <editor-fold defaultstate="collapsed" desc="logging">
     logger.info(f'[{message.chat.id} ({message.message_id})] Changed rules; reporting.')
     # </editor-fold>

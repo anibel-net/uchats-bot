@@ -67,7 +67,7 @@ async def on_callback_query(client: Client, query: CallbackQuery):
         logger.info(f'[{query.id}] Answer is correct.')
         # </editor-fold>
         if int(correct_math.group('uid')) != query.from_user.id \
-                and is_admin(client, int(correct_math.group('cid')), query.from_user.id):
+                and not await is_admin(client, int(correct_math.group('cid')), query.from_user.id):
             # <editor-fold defaultstate="collapsed" desc="logging">
             logger.info(f'[{query.id}] Done.')
             # </editor-fold>
@@ -154,7 +154,7 @@ async def on_set_welcome(client: Client, message: Message):
     logger.info(f'[{message.chat.id} ({message.message_id})] initialized.')
     logger.info(f'[{message.chat.id} ({message.message_id})] Changing welcome_message.')
     # </editor-fold>
-    await chat_data.update('welcome_message', ' '.join(message.text.markdown[13:]))
+    await chat_data.update('welcome_message', message.text.markdown[13:])
     # <editor-fold defaultstate="collapsed" desc="logging">
     logger.info(f'[{message.chat.id} ({message.message_id})] Changed welcome_message; reporting.')
     # </editor-fold>
