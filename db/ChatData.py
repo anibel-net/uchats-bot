@@ -17,6 +17,7 @@ class _Chat(TypedDict):
     rules: str
     banned_channels: list[int]
     banned_stickers: list[str]
+    verified_users: list[int]
 
 
 class ChatData:
@@ -27,6 +28,7 @@ class ChatData:
     rules: str
     banned_channels: list[int]
     banned_stickers: list[str]
+    verified_users: list[int]
 
     def __init__(self):
         ...
@@ -46,7 +48,8 @@ class ChatData:
                 'rules': 'Няхай жыве анархія!',
                 'welcome_message_timeout': 60,
                 'banned_channels': [],
-                'banned_stickers': []
+                'banned_stickers': [],
+                'verified_users': []
             })
             # <editor-fold defaultstate="collapsed" desc="logging">
             logger.info(f'Inserted default placeholder for {chat_id}.')
@@ -60,7 +63,8 @@ class ChatData:
                     f' - welcome_message_timeout is {result["welcome_message_timeout"]}\n'
                     f' - rules is {result["rules"]}\n'
                     f' - banned_channels is {result["banned_channels"]}\n'
-                    f' - banned_stickers is {result["banned_stickers"]}')
+                    f' - banned_stickers is {result["banned_stickers"]}\n'
+                    f' - verified_users is {result["verified_users"]}')
         # </editor-fold>
         self.__id = result['_id']
         self.__chat_id = result['chat_id']
@@ -69,6 +73,7 @@ class ChatData:
         self.rules = result['rules']
         self.banned_channels = result['banned_channels']
         self.banned_stickers = result['banned_stickers']
+        self.verified_users = result['verified_users']
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'Set all values for {chat_id}. Done.')
         # </editor-fold>
@@ -87,6 +92,7 @@ class ChatData:
                     f' - rules is {result["rules"]}\n'
                     f' - banned_channels is {result["banned_channels"]}\n'
                     f' - banned_stickers is {result["banned_stickers"]}\n'
+                    f' - verified_users is {result["verified_users"]}\n'
                     f'Setting it as object attributes.')
         # </editor-fold>
         self.__id = result['_id']
@@ -96,6 +102,7 @@ class ChatData:
         self.rules = result['rules']
         self.banned_channels = result['banned_channels']
         self.banned_stickers = result['banned_stickers']
+        self.verified_users = result['verified_users']
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'Updated all values for {result["chat_id"]}. Done.')
         # </editor-fold>

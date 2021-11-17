@@ -1,10 +1,10 @@
 from loguru import logger
-from pyrogram import Client
+from pyrogram import Client, filters
 from pyrogram.types import Message, ChatPermissions
 from pyrogram.errors import UserNotParticipant
 
 
-@Client.on_message(group=709)
+@Client.on_message(~filters.service, group=709)
 async def on_any_message(client: Client, message: Message):
     if message.sender_chat or message.reply_to_message:
         return

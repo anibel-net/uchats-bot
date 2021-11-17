@@ -18,6 +18,12 @@ WRONG_ANSWERS: List[str] = os.environ.get('CAPTCHA_WRONG_ANSWERS').split(';')
 @Client.on_message(filters.new_chat_members, group=101)
 async def on_new_chat_member(client: Client, message: Message):
     # <editor-fold defaultstate="collapsed" desc="logging">
+    logger.info(f'[{message.chat.id} ({message.message_id})] Initialization chat_data...')
+    # </editor-fold>
+    chat_data = ChatData()
+    await chat_data.init(message.chat.id)
+    # <editor-fold defaultstate="collapsed" desc="logging">
+    logger.info(f'[{message.chat.id} ({message.message_id})] initialized.')
     logger.info(f'[{message.chat.id} ({message.message_id})] New user joined chat: '
                 + ', '.join(map(lambda user: f'@{user.username} ({user.id})', message.new_chat_members)))
     # </editor-fold>
@@ -25,6 +31,11 @@ async def on_new_chat_member(client: Client, message: Message):
         if user.is_bot:
             # <editor-fold defaultstate="collapsed" desc="logging">
             logger.info(f'[{message.chat.id} ({message.message_id})] User {user.id} is bot; skipping.')
+            # </editor-fold>
+            continue
+        if user.id in chat_data.verified_users:
+            # <editor-fold defaultstate="collapsed" desc="logging">
+            logger.info(f'[{message.chat.id} ({message.message_id})] User {user.id} already verified. Skipping.')
             # </editor-fold>
             continue
         await client.restrict_chat_member(message.chat.id, user.id, ChatPermissions())
@@ -84,6 +95,11 @@ async def on_callback_query(client: Client, query: CallbackQuery):
         await chat_data.init(query.message.chat.id)
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'[{query.id}] initialized.')
+        logger.info(f'[{query.id}] Adding user to verified.')
+        # </editor-fold>
+        await chat_data.update('verified_users', [*chat_data.verified_users, int(correct_math.group('uid'))])
+        # <editor-fold defaultstate="collapsed" desc="logging">
+        logger.info(f'[{query.id}] Added user to verified.')
         logger.info(f'[{query.id}] Sending welcome.')
         # </editor-fold>
         welcome = await client.send_message(int(correct_math.group('cid')), chat_data.welcome_message.format(
