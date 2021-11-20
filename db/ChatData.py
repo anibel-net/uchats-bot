@@ -17,6 +17,7 @@ class _Chat(TypedDict):
     rules: str
     banned_channels: list[int]
     banned_stickers: list[str]
+    banned_stickerpacks: list[str]
     verified_users: list[int]
 
 
@@ -28,6 +29,7 @@ class ChatData:
     rules: str
     banned_channels: list[int]
     banned_stickers: list[str]
+    banned_stickerpacks: list[str]
     verified_users: list[int]
 
     def __init__(self):
@@ -49,6 +51,7 @@ class ChatData:
                 'welcome_message_timeout': 60,
                 'banned_channels': [],
                 'banned_stickers': [],
+                'banned_stickerpacks': [],
                 'verified_users': []
             })
             # <editor-fold defaultstate="collapsed" desc="logging">
@@ -64,6 +67,7 @@ class ChatData:
                     f' - rules is {result["rules"]}\n'
                     f' - banned_channels is {result["banned_channels"]}\n'
                     f' - banned_stickers is {result["banned_stickers"]}\n'
+                    f' - banned_stickerpacks is {result["banned_stickerpacks"]}\n'
                     f' - verified_users is {result["verified_users"]}')
         # </editor-fold>
         self.__id = result['_id']
@@ -73,6 +77,7 @@ class ChatData:
         self.rules = result['rules']
         self.banned_channels = result['banned_channels']
         self.banned_stickers = result['banned_stickers']
+        self.banned_stickerpacks = result['banned_stickerpacks']
         self.verified_users = result['verified_users']
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'Set all values for {chat_id}. Done.')
@@ -92,6 +97,7 @@ class ChatData:
                     f' - rules is {result["rules"]}\n'
                     f' - banned_channels is {result["banned_channels"]}\n'
                     f' - banned_stickers is {result["banned_stickers"]}\n'
+                    f' - banned_stickerpacks is {result["banned_stickerpacks"]}\n'
                     f' - verified_users is {result["verified_users"]}\n'
                     f'Setting it as object attributes.')
         # </editor-fold>
@@ -102,6 +108,7 @@ class ChatData:
         self.rules = result['rules']
         self.banned_channels = result['banned_channels']
         self.banned_stickers = result['banned_stickers']
+        self.banned_stickerpacks = result['banned_stickerpacks']
         self.verified_users = result['verified_users']
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'Updated all values for {result["chat_id"]}. Done.')
