@@ -155,7 +155,7 @@ async def on_set_welcome(client: Client, message: Message):
                          f'({message.from_user.id}) isn\'t administrator, ignoring.')
             # </editor-fold>
             return
-    if message.sender_chat:
+    if message.sender_chat and message.sender_chat.id == message.chat.id:
         # <editor-fold defaultstate="collapsed" desc="logging">
         logger.info(f'[{message.chat.id} ({message.message_id})] Received message'
                      f'from @{message.sender_chat.username} ({message.sender_chat.id}): {message.text}')
