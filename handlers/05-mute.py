@@ -29,8 +29,8 @@ async def on_mute(client: Client, message: Message):
     if message.from_user:
         if not (await client.get_chat_member(message.chat.id, message.from_user.id)).can_restrict_members:
             return
-    if message.sender_chat and message.sender_chat.id == message.chat.id:
-        ...
+    if message.sender_chat:
+        return
     if message.reply_to_message is None:
         await message.delete()
         return

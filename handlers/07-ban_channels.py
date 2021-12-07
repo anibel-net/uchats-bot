@@ -38,13 +38,8 @@ async def validate_channel(client: Client, cid: str) -> Union[BanCandidate, None
 @Client.on_message(filters.forwarded, group=107)
 async def on_forward(client: Client, message: Message):
     if message.from_user:
-        ...
         if await is_admin(client, message.chat.id, message.from_user.id):
             return
-    if message.sender_chat and message.sender_chat.id == message.chat.id:
-        return
-    if message.forward_from_chat.type != 'channel':
-        return
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
     if message.forward_from_chat.id in chat_data.banned_channels:
@@ -57,8 +52,6 @@ async def on_link(client: Client, message: Message):
     if message.from_user:
         if await is_admin(client, message.chat.id, message.from_user.id):
             return
-    if message.sender_chat:
-        return
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
     for match in message.matches:
@@ -72,8 +65,8 @@ async def on_ban_channel(client: Client, message: Message):
     if message.from_user:
         if not await is_admin(client, message.chat.id, message.from_user.id):
             return
-    if message.sender_chat and message.sender_chat.id == message.chat.id:
-        ...
+    if message.sender_chat:
+        return
 
     chat_data = ChatData()
     await chat_data.init(message.chat.id)

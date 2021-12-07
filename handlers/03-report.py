@@ -12,10 +12,6 @@ from pyrogram.types import Message
     group=303
 )
 async def on_report(client: Client, message: Message):
-    if message.from_user:
-        ...
-    if message.sender_chat and message.sender_chat.id == message.chat.id:
-        ...
     admins = client.iter_chat_members(message.chat.id, filter='administrators')
     if admins is None:
         await message.reply('Нешта пайшло не так. Калі ласка, паспрабуйце яшчэ раз ці пазней.')

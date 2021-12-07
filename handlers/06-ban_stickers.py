@@ -28,8 +28,8 @@ async def on_ban_sticker(client: Client, message: Message):
     if message.from_user:
         if not await is_admin(client, message.chat.id, message.from_user.id):
             return
-    if message.sender_chat and message.sender_chat.id == message.chat.id:
-        ...
+    if message.sender_chat:
+        return
 
     if message.reply_to_message.sticker is None:
         reply = await message.reply('Калі ласка, выкарыстоўвайце `/ban sticker у адказ на стыкер, які хочаце забаніць.')
@@ -55,7 +55,7 @@ async def on_ban_stickerpack(client: Client, message: Message):
         if not await is_admin(client, message.chat.id, message.from_user.id):
             return
     if message.sender_chat:
-        ...
+        return
 
     if message.reply_to_message.sticker is None:
         reply = await message.reply(
