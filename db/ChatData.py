@@ -18,6 +18,7 @@ class _Chat(TypedDict):
     banned_stickers: list[str]
     banned_stickerpacks: list[str]
     verified_users: list[int]
+    whitelisted_channels: list[int]
 
 
 class ChatData:
@@ -30,6 +31,7 @@ class ChatData:
     banned_stickers: list[str]
     banned_stickerpacks: list[str]
     verified_users: list[int]
+    whitelisted_channels: list[int]
 
     def __init__(self):
         ...
@@ -45,7 +47,8 @@ class ChatData:
                 'banned_channels': [],
                 'banned_stickers': [],
                 'banned_stickerpacks': [],
-                'verified_users': []
+                'verified_users': [],
+                'whitelisted_channels': []
             })
             result: _Chat = await collection.find_one({'_id': insert_result.inserted_id})
         self.__id = result['_id'] if '_id' in result else ObjectId()
@@ -57,6 +60,7 @@ class ChatData:
         self.banned_stickers = result['banned_stickers'] if 'banned_stickers' in result else list()
         self.banned_stickerpacks = result['banned_stickerpacks'] if 'banned_stickerpacks' in result else list()
         self.verified_users = result['verified_users'] if 'verified_users' in result else list()
+        self.whitelisted_channels = result['whitelisted_channels'] if 'whitelisted_channels' in result else list()
 
     async def update(self, key, value):
         await collection.find_one_and_update({'_id': self.__id}, {"$set": {key: value}})
@@ -70,3 +74,4 @@ class ChatData:
         self.banned_stickers = result['banned_stickers']
         self.banned_stickerpacks = result['banned_stickerpacks']
         self.verified_users = result['verified_users']
+        self.whitelisted_channels = result['whitelisted_channels']
