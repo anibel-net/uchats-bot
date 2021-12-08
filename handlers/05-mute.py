@@ -24,13 +24,8 @@ PERIOD_IN_SECONDS: PeriodInSeconds = {
 }
 
 
-@Client.on_message(filters.command(['mute', 'ro']) & filters.group, group=205)
+@Client.on_message(filters.command(['mute', 'ro']) & filters.group & filters.admin, group=205)
 async def on_mute(client: Client, message: Message):
-    if message.from_user:
-        if not (await client.get_chat_member(message.chat.id, message.from_user.id)).can_restrict_members:
-            return
-    if message.sender_chat:
-        return
     if message.reply_to_message is None:
         await message.delete()
         return

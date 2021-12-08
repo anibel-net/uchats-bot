@@ -4,16 +4,10 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 
 from db.ChatData import ChatData
-from functions import is_admin
 
 
-@Client.on_message(filters.sticker, group=106)
-async def on_sticker(client: Client, message: Message):
-    if message.from_user:
-        if await is_admin(client, message.chat.id, message.from_user.id):
-            return
-    if message.sender_chat and message.sender_chat.id == message.chat.id:
-        return
+@Client.on_message(filters.sticker & ~filters.admin, group=106)
+async def on_sticker(_: Client, message: Message):
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
     if message.sticker.file_unique_id in chat_data.banned_stickers:
@@ -23,14 +17,8 @@ async def on_sticker(client: Client, message: Message):
     return
 
 
-@Client.on_message(filters.command('ban sticker'), group=206)
-async def on_ban_sticker(client: Client, message: Message):
-    if message.from_user:
-        if not await is_admin(client, message.chat.id, message.from_user.id):
-            return
-    if message.sender_chat:
-        return
-
+@Client.on_message(filters.command('ban sticker') & filters.admin, group=206)
+async def on_ban_sticker(_: Client, message: Message):
     if message.reply_to_message.sticker is None:
         reply = await message.reply('Калі ласка, выкарыстоўвайце `/ban sticker у адказ на стыкер, які хочаце забаніць.')
         await asyncio.sleep(10)
@@ -49,13 +37,8 @@ async def on_ban_sticker(client: Client, message: Message):
     return
 
 
-@Client.on_message(filters.command('ban stickerpack'), group=206)
-async def on_ban_stickerpack(client: Client, message: Message):
-    if message.from_user:
-        if not await is_admin(client, message.chat.id, message.from_user.id):
-            return
-    if message.sender_chat:
-        return
+@Client.on_message(filters.command('ban stickerpack') & filters.admin, group=206)
+async def on_ban_stickerpack(_: Client, message: Message):
 
     if message.reply_to_message.sticker is None:
         reply = await message.reply(

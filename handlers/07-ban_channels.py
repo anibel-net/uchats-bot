@@ -4,14 +4,11 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 
 from db.ChatData import ChatData
-from functions import is_admin, ParsedChannel, validate_channel
+from functions import ParsedChannel, validate_channel
 
 
-@Client.on_message(filters.forwarded, group=107)
-async def on_forward(client: Client, message: Message):
-    if message.from_user:
-        if await is_admin(client, message.chat.id, message.from_user.id):
-            return
+@Client.on_message(filters.forwarded & ~filters.admin, group=107)
+async def on_forward(_: Client, message: Message):
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
     if message.forward_from_chat.id in chat_data.banned_channels:
@@ -19,11 +16,8 @@ async def on_forward(client: Client, message: Message):
     return
 
 
-@Client.on_message(filters.regex(r'(?P<url>t.me/[^\s]+)'), group=107)
+@Client.on_message(filters.regex(r'(?P<url>t.me/[^\s]+)') & ~filters.admin, group=107)
 async def on_link(client: Client, message: Message):
-    if message.from_user:
-        if await is_admin(client, message.chat.id, message.from_user.id):
-            return
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
     for match in message.matches:
@@ -32,14 +26,8 @@ async def on_link(client: Client, message: Message):
             await message.delete()
 
 
-@Client.on_message(filters.command('ban channel'), group=207)
+@Client.on_message(filters.command('ban channel') & filters.admin, group=207)
 async def on_ban_channel(client: Client, message: Message):
-    if message.from_user:
-        if not await is_admin(client, message.chat.id, message.from_user.id):
-            return
-    if message.sender_chat:
-        return
-
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
     if len(message.command) == 1 and \
