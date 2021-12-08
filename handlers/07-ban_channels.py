@@ -1,38 +1,10 @@
 import asyncio
-from typing import TypedDict, Union
 
-from loguru import logger
 from pyrogram import Client, filters
-from pyrogram.errors import PeerIdInvalid, UsernameNotOccupied, FloodWait, UsernameInvalid
 from pyrogram.types import Message
 
 from db.ChatData import ChatData
-from functions import is_admin
-
-
-class BanCandidate(TypedDict):
-    id: int
-    username: Union[str, None]
-    title: str
-
-
-async def validate_channel(client: Client, cid: str) -> Union[BanCandidate, None]:
-    try:
-        channel = await client.get_chat(cid)
-        if channel.type != 'channel':
-            return
-        return {
-            'id': channel.id,
-            'username': channel.username,
-            'title': str(channel.title)
-        }
-    except (PeerIdInvalid, UsernameNotOccupied, UsernameInvalid) as e:
-        logger.error(f"[{cid}] Couldn't convert find channel.")
-        return
-    except FloodWait as e:
-        logger.error(f'[{cid}] Got FloodWait, waiting {e.x} seconds.')
-        await asyncio.sleep(e.x)
-        return await validate_channel(client, cid)
+from functions import is_admin, ParsedChannel, validate_channel
 
 
 @Client.on_message(filters.forwarded, group=107)
@@ -82,7 +54,7 @@ async def on_ban_channel(client: Client, message: Message):
         await reply.delete()
         return
 
-    ban_candidates: list[BanCandidate] = []
+    ban_candidates: list[ParsedChannel] = []
 
     if message.reply_to_message and message.reply_to_message.forward_from_chat \
             and message.reply_to_message.forward_from_chat.type == 'channel':
