@@ -48,15 +48,15 @@ class ChatData:
                 'verified_users': []
             })
             result: _Chat = await collection.find_one({'_id': insert_result.inserted_id})
-        self.__id = result['_id']
-        self.__chat_id = result['chat_id']
-        self.welcome_message = result['welcome_message']
-        self.welcome_message_timeout = result['welcome_message_timeout']
-        self.rules = result['rules']
-        self.banned_channels = result['banned_channels']
-        self.banned_stickers = result['banned_stickers']
-        self.banned_stickerpacks = result['banned_stickerpacks']
-        self.verified_users = result['verified_users']
+        self.__id = result['_id'] if '_id' in result else ObjectId()
+        self.__chat_id = result['chat_id'] if 'chat_id' in result else int()
+        self.welcome_message = result['welcome_message'] if 'welcome_message' in result else str()
+        self.welcome_message_timeout = result['welcome_message_timeout'] if 'welcome_message_timeout' in result else 60
+        self.rules = result['rules'] if 'rules' in result else str()
+        self.banned_channels = result['banned_channels'] if 'banned_channels' in result else list()
+        self.banned_stickers = result['banned_stickers'] if 'banned_stickers' in result else list()
+        self.banned_stickerpacks = result['banned_stickerpacks'] if 'banned_stickerpacks' in result else list()
+        self.verified_users = result['verified_users'] if 'verified_users' in result else list()
 
     async def update(self, key, value):
         await collection.find_one_and_update({'_id': self.__id}, {"$set": {key: value}})
