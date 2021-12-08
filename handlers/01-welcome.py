@@ -46,8 +46,7 @@ async def on_callback_query(client: Client, query: CallbackQuery):
     wrong_math = re.match(r'WR__(?P<uid>\d+)__(?P<cid>-?\d+)', query.data)
 
     if correct_math:
-        if int(correct_math.group('uid')) != query.from_user.id \
-                and not await is_admin(client, int(correct_math.group('cid')), query.from_user.id):
+        if int(correct_math.group('uid')) != query.from_user.id:
             return query.answer('Кнопка не для вас.')
         await client.restrict_chat_member(
             int(correct_math.group('cid')),
@@ -64,8 +63,7 @@ async def on_callback_query(client: Client, query: CallbackQuery):
         await welcome.delete()
 
     if wrong_math:
-        if int(wrong_math.group('uid')) != query.from_user.id \
-                and is_admin(client, int(wrong_math.group('cid')), query.from_user.id):
+        if int(wrong_math.group('uid')) != query.from_user.id:
             return query.answer('Кнопка не для вас.')
         await query.message.delete()
 
