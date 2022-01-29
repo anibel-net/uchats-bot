@@ -6,7 +6,7 @@ from db.ChatData import ChatData
 from functions import is_admin
 
 
-@Client.on_message(~filters.service, group=709)
+@Client.on_message(~filters.service & ~filters.private, group=709)
 async def on_any_message(client: Client, message: Message):
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
