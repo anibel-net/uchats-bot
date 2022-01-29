@@ -4,9 +4,10 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 
 from db.ChatData import ChatData
+from functions import admin_filter
 
 
-@Client.on_message(filters.sticker & ~filters.admin, group=106)
+@Client.on_message(filters.sticker & ~admin_filter, group=106)
 async def on_sticker(_: Client, message: Message):
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
@@ -17,7 +18,7 @@ async def on_sticker(_: Client, message: Message):
     return
 
 
-@Client.on_message(filters.command('ban sticker') & filters.admin, group=206)
+@Client.on_message(filters.command('ban sticker') & admin_filter, group=206)
 async def on_ban_sticker(_: Client, message: Message):
     if message.reply_to_message.sticker is None:
         reply = await message.reply('Калі ласка, выкарыстоўвайце `/ban sticker у адказ на стыкер, які хочаце забаніць.')
@@ -37,7 +38,7 @@ async def on_ban_sticker(_: Client, message: Message):
     return
 
 
-@Client.on_message(filters.command('ban stickerpack') & filters.admin, group=206)
+@Client.on_message(filters.command('ban stickerpack') & admin_filter, group=206)
 async def on_ban_stickerpack(_: Client, message: Message):
 
     if message.reply_to_message.sticker is None:

@@ -6,7 +6,7 @@ from typing import TypedDict
 from pyrogram import Client, filters
 from pyrogram.types import Message, ChatPermissions
 
-from functions import is_admin
+from functions import is_admin, admin_filter
 
 PATTERN = re.compile(r'^/(mute|ro) ?(?P<term>(?P<count>\d+(\.\d+)?) ?(?P<unit>[a-z]+))? ?(?P<reason>.+)?$', re.I)
 
@@ -24,7 +24,7 @@ PERIOD_IN_SECONDS: PeriodInSeconds = {
 }
 
 
-@Client.on_message(filters.command(['mute', 'ro']) & filters.group & filters.admin, group=205)
+@Client.on_message(filters.command(['mute', 'ro']) & filters.group & admin_filter, group=205)
 async def on_mute(client: Client, message: Message):
     if message.reply_to_message is None:
         await message.delete()
@@ -33,7 +33,7 @@ async def on_mute(client: Client, message: Message):
         await message.delete()
         return
     target = message.reply_to_message.from_user
-    if await is_admin(client, message.chat.id, target.id):
+    if await is_admin(None, None, message.reply_to_message):
         reply = await message.reply('Не магу абмежаваць гэтага карыстальніка, бо ён з\'яўляеца адміністратам.')
         await asyncio.sleep(10)
         await message.delete()

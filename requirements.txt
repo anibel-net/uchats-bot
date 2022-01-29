@@ -1,6 +1,6 @@
 python-dotenv
 loguru
-https://github.com/belarusaed/pyrogram/archive/refs/heads/master.zip
+pyrogram
 motor
 pymongo[srv]
 apscheduler

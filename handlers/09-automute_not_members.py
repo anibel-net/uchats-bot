@@ -3,9 +3,10 @@ from pyrogram.errors import UserNotParticipant
 from pyrogram.types import Message, ChatPermissions
 
 from db.ChatData import ChatData
+from functions import admin_filter
 
 
-@Client.on_message(~filters.service & ~filters.admin, group=709)
+@Client.on_message(~filters.service & ~admin_filter, group=709)
 async def on_any_message(client: Client, message: Message):
     chat_data = ChatData()
     await chat_data.init(message.chat.id)

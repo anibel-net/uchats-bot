@@ -8,6 +8,7 @@ from pyrogram import Client, filters
 from pyrogram.types import Message, ChatPermissions, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 
 from db.ChatData import ChatData
+from functions import admin_filter
 
 CORRECT_ANSWERS: List[str] = os.environ.get('CAPTCHA_CORRECT_ANSWERS').split(';')
 WRONG_ANSWERS: List[str] = os.environ.get('CAPTCHA_WRONG_ANSWERS').split(';')
@@ -70,7 +71,7 @@ async def on_callback_query(client: Client, query: CallbackQuery):
     return
 
 
-@Client.on_message(filters.command('set welcome') & filters.admin, group=201)
+@Client.on_message(filters.command('set welcome') & admin_filter, group=201)
 async def on_set_welcome(_: Client, message: Message):
     chat_data = ChatData()
     await chat_data.init(message.chat.id)

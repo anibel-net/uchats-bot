@@ -1,5 +1,15 @@
-from pyrogram import Client
+import os
+
+from pyrogram import filters
+from pyrogram.types import Message
 
 
-async def is_admin(client: Client, chat_id: int, user_id: int):
-    return (await client.get_chat_member(chat_id, user_id)).status in ('creator', 'administrator')
+async def is_admin(_, __, message: Message):
+    return (message.sender_chat and message.sender_chat.id == message.chat.id) or \
+           (message.from_user and (
+                   (await message.chat.get_member(message.from_user.id)).status in ('creator', 'administrator')) or
+            message.from_user.id in [int(uid) for uid in os.getenv('ADMINS').split(';')]
+            )
+
+
+admin_filter = filters.create(is_admin)

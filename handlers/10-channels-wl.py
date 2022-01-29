@@ -4,7 +4,7 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 
 from db.ChatData import ChatData
-from functions import validate_channel
+from functions import validate_channel, admin_filter
 
 
 @Client.on_message(filters.create(lambda _, __, message: message.sender_chat is not None), group=110)
@@ -19,7 +19,7 @@ async def on_message_from_chat(_: Client, message: Message):
     await message.chat.kick_member(message.sender_chat.id, int(time.time()) + 600)
 
 
-@Client.on_message(filters.command('wl') & filters.admin)
+@Client.on_message(filters.command('wl') & admin_filter)
 async def on_wl(client: Client, message: Message):
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
@@ -30,7 +30,7 @@ async def on_wl(client: Client, message: Message):
     await message.reply('Каналы дазволены')
 
 
-@Client.on_message(filters.command('un_wl') & filters.admin)
+@Client.on_message(filters.command('un_wl') & admin_filter)
 async def on_un_wl(client: Client, message: Message):
     channels: list[int] = \
         [channel['id'] for channel in filter(None, [await validate_channel(client, s) for s in message.command[1:]])]

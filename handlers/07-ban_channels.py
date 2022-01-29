@@ -4,10 +4,10 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 
 from db.ChatData import ChatData
-from functions import ParsedChannel, validate_channel
+from functions import ParsedChannel, validate_channel, admin_filter
 
 
-@Client.on_message(filters.forwarded & ~filters.admin, group=107)
+@Client.on_message(filters.forwarded & ~admin_filter, group=107)
 async def on_forward(_: Client, message: Message):
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
@@ -16,7 +16,7 @@ async def on_forward(_: Client, message: Message):
     return
 
 
-@Client.on_message(filters.regex(r'(?P<url>t.me/[^\s]+)') & ~filters.admin, group=107)
+@Client.on_message(filters.regex(r'(?P<url>t.me/[^\s]+)') & ~admin_filter, group=107)
 async def on_link(client: Client, message: Message):
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
@@ -26,7 +26,7 @@ async def on_link(client: Client, message: Message):
             await message.delete()
 
 
-@Client.on_message(filters.command('ban channel') & filters.admin, group=207)
+@Client.on_message(filters.command('ban channel') & admin_filter, group=207)
 async def on_ban_channel(client: Client, message: Message):
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
