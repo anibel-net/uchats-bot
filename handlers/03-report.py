@@ -8,7 +8,7 @@ from pyrogram.types import Message
 
 @Client.on_message(
     filters.command(['report', f'report@{os.environ.get("BOT_USERNAME")}'], ['/', '!']) |
-    filters.command(['admin', 'admins'], '@'),
+    filters.command(['admin', 'admins'], '@') & ~filters.private,
     group=303
 )
 async def on_report(client: Client, message: Message):

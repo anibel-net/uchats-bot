@@ -7,7 +7,7 @@ from db.ChatData import ChatData
 from functions import admin_filter
 
 
-@Client.on_message(filters.command(['rules', f'rules@{os.environ.get("BOT_USERNAME")}']), group=302)
+@Client.on_message(filters.command(['rules', f'rules@{os.environ.get("BOT_USERNAME")}']) & ~filters.private, group=302)
 async def on_rules(_: Client, message: Message):
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
