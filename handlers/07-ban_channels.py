@@ -16,7 +16,7 @@ async def on_forward(_: Client, message: Message):
     return
 
 
-@Client.on_message(filters.regex(r'(?P<url>t.me/[^\s]+)') & ~admin_filter, group=107)
+@Client.on_message(filters.regex(r'(?P<url>t.me/[^\s]+)') & ~admin_filter, group=1107)
 async def on_link(client: Client, message: Message):
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
