@@ -8,6 +8,8 @@ from functions import is_admin
 
 @Client.on_message(~filters.service & ~filters.private, group=709)
 async def on_any_message(client: Client, message: Message):
+    if message.reply_to_message:
+        return  # Should return only if reply thread started from message from (await client.get_chat(message.chat.id)).linked_chat
     chat_data = ChatData()
     await chat_data.init(message.chat.id)
     if message.sender_chat:
