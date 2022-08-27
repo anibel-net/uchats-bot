@@ -1,6 +1,6 @@
 python-dotenv
 loguru
-pyrogram
+pyrogram~=1.4
 motor
 pymongo[srv]
 apscheduler
